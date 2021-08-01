@@ -8,6 +8,8 @@ using System;
 
 public class FaceDetector : MonoBehaviour
 {
+    public bool performHandDetection = false;
+
     // first camera device in array
     public int cameraDevice = 0;
     private GameObject cameraImage;
@@ -75,8 +77,8 @@ public class FaceDetector : MonoBehaviour
 
         // cascade ranking: fist.xml (works fine sometimes), aGest.xml (not so good), hand.xml (not so good)
 
-        // works if there's a hand , doesnt when face is there
-        handCascade = new CascadeClassifier("Assets/handcascade.xml");
+        if (performHandDetection)
+            handCascade = new CascadeClassifier("Assets/handcascade.xml");
     }
 
     // LateUpdate is used because update only needs to happen when frame is updated
@@ -93,7 +95,10 @@ public class FaceDetector : MonoBehaviour
         findNewFace(frame);
         FindEyes(frame);
 
-        findHands(frame);
+        if (performHandDetection)
+        {
+            findHands(frame);
+        }
         
         display(frame);
     }
@@ -196,7 +201,8 @@ public class FaceDetector : MonoBehaviour
                 translateCamera(eyeHeightDifference);
             }
 
-            DisplayHand(frame);
+            if (performHandDetection)
+                DisplayHand(frame);
 
             // Flip() is there to make sure the user sees the right image
             Texture newtexture = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.Y));
@@ -212,11 +218,13 @@ public class FaceDetector : MonoBehaviour
         }
     }
 
-    void translateCamera(float rotate){
+    void translateCamera(float rotate)
+    {
         var myFaceArea = MyFace.Size.Height * MyFace.Size.Width;
 
         // if the face area takes up less than this portion of the webcam fov
-        if (myFaceArea < (0.35 * _webCamTexture.height) * (0.25 * _webCamTexture.width))
+        //if (myFaceArea < (0.35 * _webCamTexture.height) * (0.25 * _webCamTexture.width))
+        if (myFaceArea < (0.3 * _webCamTexture.height) * (0.2 * _webCamTexture.width))
         {
             // move player back
             playerCamera.transform.Translate(Vector3.back * Time.deltaTime * speed);
@@ -231,11 +239,11 @@ public class FaceDetector : MonoBehaviour
         }
 
         // small dead zone
-        if(Math.Abs(rotate/MyFace.Size.Height) > 0.04f)
+        if (Math.Abs(rotate / MyFace.Size.Height) > 0.06f)
         {
-            playerCamera.transform.Rotate(Vector3.up, rotate/MyFace.Size.Height * Time.deltaTime * 500f);
+            playerCamera.transform.Rotate(Vector3.up, rotate / MyFace.Size.Height * Time.deltaTime * 500f);
         }
-            
+
     }
 }
 
