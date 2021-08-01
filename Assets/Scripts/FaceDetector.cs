@@ -47,9 +47,9 @@ public class FaceDetector : MonoBehaviour
     private float hand1X;
     private float hand1Y;
 
-
     OpenCvSharp.Rect Hand1;
 
+    public GameObject screen;
 
     public float speed = 3.0f;
 
@@ -158,7 +158,6 @@ public class FaceDetector : MonoBehaviour
         }
     }
 
-
     void display(Mat frame)
     {
         // if face + eyes are found
@@ -207,6 +206,9 @@ public class FaceDetector : MonoBehaviour
             cameraImage.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-newtexture.width*pipScale * .7f, newtexture.height*pipScale*.7f, 0);
             cameraImage.GetComponent<RectTransform>().sizeDelta = new Vector2(newtexture.width*pipScale, newtexture.height*pipScale);
             cameraImage.GetComponent<CanvasRenderer>().SetTexture(newtexture);
+
+            Texture textureForScreen = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.X));
+            screen.GetComponent<Renderer>().material.mainTexture = newtexture;
         }
     }
 
