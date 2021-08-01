@@ -221,7 +221,8 @@ public class FaceDetector : MonoBehaviour
         }
 
         // if the face area takes up more than this portion of the webcam fov
-        if (myFaceArea > (0.45*_webCamTexture.height)*(0.3*_webCamTexture.width))
+        //if (myFaceArea > (0.45*_webCamTexture.height)*(0.3*_webCamTexture.width))
+        if (myFaceArea > (0.40 * _webCamTexture.height) * (0.25 * _webCamTexture.width))
         {
             // move player forward
             playerCamera.transform.Translate(Vector3.forward * Time.deltaTime * speed);
