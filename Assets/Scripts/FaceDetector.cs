@@ -8,10 +8,9 @@ using System;
 
 public class FaceDetector : MonoBehaviour
 {
-    private GameObject cameraImage;
-
     // first camera device in array
     public int cameraDevice = 0;
+    private GameObject cameraImage;
 
     WebCamTexture _webCamTexture;
 
@@ -19,28 +18,42 @@ public class FaceDetector : MonoBehaviour
     private int videoWidth = 512;
     private int videoHeight = 288;
 
+    // cascades used to recognize face, eyes, hand
     public CascadeClassifier faceCascade;
     public CascadeClassifier leftEyeCascade;
-
     public CascadeClassifier handCascade;
 
-    public TextAsset faceXML;
-    public TextAsset eyeXML;
-    public GameObject faceCube;
+    //public TextAsset faceXML;
+    //public TextAsset eyeXML;
+    //public GameObject faceCube;
+
     public GameObject playerCamera;
     
+    // locations of face square
     private float cubeLocationX;
     private float cubeLocationY;
 
+    // request fps
     private int videoFPS = 10;
+    
+    // rectangles to render
     OpenCvSharp.Rect MyFace;
     OpenCvSharp.Rect Eye1;
     OpenCvSharp.Rect Eye2;
+
+    // locations of eyes
     private float eye1X;
     private float eye1Y;
     private float eye2X;
     private float eye2Y;
-    
+
+    // location of hand
+    private float hand1X;
+    private float hand1Y;
+
+
+    OpenCvSharp.Rect Hand1;
+
 
     public float speed = 3.0f;
 
@@ -64,7 +77,10 @@ public class FaceDetector : MonoBehaviour
         faceCascade = new CascadeClassifier("Assets/haarcascade_frontalface_default.xml");
         leftEyeCascade = new CascadeClassifier("Assets/haarcascade_righteye_2splits.xml");
 
-        handCascade = new CascadeClassifier("Assets/aGest.xml");
+        // cascade ranking: fist.xml (works fine sometimes), aGest.xml (not so good), hand.xml (not so good)
+
+        // works if there's a hand , doesnt when face is there
+        handCascade = new CascadeClassifier("Assets/handcascade.xml");
     }
 
     // LateUpdate is used because update only needs to happen when frame is updated
@@ -126,10 +142,26 @@ public class FaceDetector : MonoBehaviour
 
         if (hands.Length >= 1)
         {
-            Debug.Log("found hand");
+            Hand1 = hands[0];
+            hand1X = hands[0].Location.X;
+            hand1Y = hands[0].Location.Y;
         }
     }
 
+
+    void DisplayHand(Mat frame)
+    {
+        // calculate distance between face and hand
+        //var distance = Math.Sqrt((Math.Pow(hand1X - cubeLocationX, 2) + Math.Pow(hand1Y - cubeLocationY, 2)));
+        //Debug.Log(distance);
+
+        //float handFromFaceDeadZone = 200;
+
+        //if (distance >= handFromFaceDeadZone)
+        //{
+            frame.Rectangle(Hand1, new Scalar(225, 0, 0), 2);
+        //}
+    }
 
 
     void display(Mat frame)
@@ -170,6 +202,8 @@ public class FaceDetector : MonoBehaviour
                 translateCamera(eyeHeightDifference);
             }
 
+            DisplayHand(frame);
+
             // Flip() is there to make sure the user sees the right image
             Texture newtexture = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.Y));
 
@@ -178,24 +212,29 @@ public class FaceDetector : MonoBehaviour
             cameraImage.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-newtexture.width*pipScale * .7f, newtexture.height*pipScale*.7f, 0);
             cameraImage.GetComponent<RectTransform>().sizeDelta = new Vector2(newtexture.width*pipScale, newtexture.height*pipScale);
             cameraImage.GetComponent<CanvasRenderer>().SetTexture(newtexture);
-            
         }
     }
 
     void translateCamera(float rotate){
-        // Debug.Log(MyFace.Size.Height * MyFace.Size.Width);
-        // Debug.Log(cubeLocationX);
+        var myFaceArea = MyFace.Size.Height * MyFace.Size.Width;
 
-        if(MyFace.Size.Height * MyFace.Size.Width < (0.35 * _webCamTexture.height) * (0.25 * _webCamTexture.width))
+        // if the face area takes up less than this portion of the webcam fov
+        if (myFaceArea < (0.35 * _webCamTexture.height) * (0.25 * _webCamTexture.width))
         {
+            // move player back
             playerCamera.transform.Translate(Vector3.back * Time.deltaTime * speed);
         }
-        if (MyFace.Size.Height * MyFace.Size.Width > (0.45*_webCamTexture.height)*(0.3*_webCamTexture.width))
+
+        // if the face area takes up more than this portion of the webcam fov
+        if (myFaceArea > (0.45*_webCamTexture.height)*(0.3*_webCamTexture.width))
         {
+            // move player forward
             playerCamera.transform.Translate(Vector3.forward * Time.deltaTime * speed);
         }
 
-        if(Math.Abs(rotate/MyFace.Size.Height) > 0.04f){
+        // small dead zone
+        if(Math.Abs(rotate/MyFace.Size.Height) > 0.04f)
+        {
             playerCamera.transform.Rotate(Vector3.up, rotate/MyFace.Size.Height * Time.deltaTime * 500f);
         }
             

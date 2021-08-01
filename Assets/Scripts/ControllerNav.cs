@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    //Creates an object of the player, importing its attributes
     public GameObject player;
 
     private float speed = 1.0f;
