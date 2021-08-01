@@ -93,7 +93,7 @@ public class FaceDetector : MonoBehaviour
         findNewFace(frame);
         FindEyes(frame);
 
-        //findHands(frame);
+        findHands(frame);
         
         display(frame);
     }
@@ -147,16 +147,15 @@ public class FaceDetector : MonoBehaviour
 
     void DisplayHand(Mat frame)
     {
-        // calculate distance between face and hand
-        //var distance = Math.Sqrt((Math.Pow(hand1X - cubeLocationX, 2) + Math.Pow(hand1Y - cubeLocationY, 2)));
-        //Debug.Log(distance);
+        //calculate distance between face and hand
+        var distance = Math.Sqrt((Math.Pow(hand1X - cubeLocationX, 2) + Math.Pow(hand1Y - cubeLocationY, 2)));
 
-        //float handFromFaceDeadZone = 200;
+        float handFromFaceDeadZone = 200;
 
-        //if (distance >= handFromFaceDeadZone)
-        //{
+        if (distance >= handFromFaceDeadZone)
+        {
             frame.Rectangle(Hand1, new Scalar(225, 0, 0), 2);
-        //}
+        }
     }
 
 
@@ -198,7 +197,7 @@ public class FaceDetector : MonoBehaviour
                 translateCamera(eyeHeightDifference);
             }
 
-            //DisplayHand(frame);
+            DisplayHand(frame);
 
             // Flip() is there to make sure the user sees the right image
             Texture newtexture = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.Y));
