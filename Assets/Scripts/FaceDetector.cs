@@ -213,8 +213,13 @@ public class FaceDetector : MonoBehaviour
             cameraImage.GetComponent<RectTransform>().sizeDelta = new Vector2(newtexture.width*pipScale, newtexture.height*pipScale);
             cameraImage.GetComponent<CanvasRenderer>().SetTexture(newtexture);
 
-            Texture textureForScreen = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.X));
-            screen.GetComponent<Renderer>().material.mainTexture = newtexture;
+            // check if screen was assigned in inspector
+            if (screen)
+            {
+                Texture textureForScreen = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.X));
+                screen.GetComponent<Renderer>().material.mainTexture = newtexture;
+
+            }
         }
     }
 
