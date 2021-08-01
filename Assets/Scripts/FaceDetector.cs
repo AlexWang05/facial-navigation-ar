@@ -23,10 +23,6 @@ public class FaceDetector : MonoBehaviour
     public CascadeClassifier leftEyeCascade;
     public CascadeClassifier handCascade;
 
-    //public TextAsset faceXML;
-    //public TextAsset eyeXML;
-    //public GameObject faceCube;
-
     public GameObject playerCamera;
     
     // locations of face square
@@ -97,7 +93,7 @@ public class FaceDetector : MonoBehaviour
         findNewFace(frame);
         FindEyes(frame);
 
-        findHands(frame);
+        //findHands(frame);
         
         display(frame);
     }
@@ -167,7 +163,7 @@ public class FaceDetector : MonoBehaviour
     void display(Mat frame)
     {
         // if face + eyes are found
-        if (MyFace != null && Eye1 != null && Eye2 != null)
+        if (MyFace != null && (Eye1 != null || Eye2 != null))
         {
             var myFaceArea = MyFace.Size.Width * MyFace.Size.Height;
             var eyesTotalArea = Eye1.Size.Width * Eye1.Size.Height + Eye2.Size.Width * Eye2.Size.Height;
@@ -202,7 +198,7 @@ public class FaceDetector : MonoBehaviour
                 translateCamera(eyeHeightDifference);
             }
 
-            DisplayHand(frame);
+            //DisplayHand(frame);
 
             // Flip() is there to make sure the user sees the right image
             Texture newtexture = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.Y));
