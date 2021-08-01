@@ -1369,8 +1369,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 680ed487781900e48b3bbbdddbf4604d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  topButton: {fileID: 1772598987}
+  bottomButton: {fileID: 2115777464}
   cameraDevice: 0
-  playerCamera: {fileID: 0}
   speed: 3
 --- !u!1 &2115777462
 GameObject:

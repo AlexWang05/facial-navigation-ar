@@ -63,14 +63,14 @@ public class FaceDetector : MonoBehaviour
 
         // texture on which the video will be rendered
         _webCamTexture = new WebCamTexture(devices[cameraDevice].name);
-        
+
         // set width, height, and fps
         _webCamTexture.requestedWidth = videoWidth;
         _webCamTexture.requestedHeight = videoHeight;
         _webCamTexture.requestedFPS = videoFPS;
-
-        _webCamTexture.Play();
         
+        _webCamTexture.Play();
+
         // load classifier xml file provided by the OpenCV library
         faceCascade = new CascadeClassifier("Assets/haarcascade_frontalface_default.xml");
         leftEyeCascade = new CascadeClassifier("Assets/haarcascade_righteye_2splits.xml");
@@ -218,7 +218,6 @@ public class FaceDetector : MonoBehaviour
             {
                 Texture textureForScreen = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.X));
                 screen.GetComponent<Renderer>().material.mainTexture = newtexture;
-
             }   
         }
     }
