@@ -219,7 +219,7 @@ public class FaceDetector : MonoBehaviour
                 Texture textureForScreen = OpenCvSharp.Unity.MatToTexture(frame.Flip(FlipMode.X));
                 screen.GetComponent<Renderer>().material.mainTexture = newtexture;
 
-            }
+            }   
         }
     }
 
