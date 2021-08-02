@@ -1,4 +1,9 @@
 # GDARN (Gesutre Driven Augmented Reality Navigation)
+
+
+First Place at Helix Hacks II, 2021
+
+
 ## Inspiration
 Currently, augmented and virtual reality systems require handheld controllers or room invasive sensors for navigating virtual environments. Unfortunately, the current controllers are inaccessible for those with disabilities. To address this problem, we developed a system that integrates facial and gesture-driven navigation to make games and programs more accessible. 
 ## What it does
